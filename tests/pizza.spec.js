@@ -267,6 +267,17 @@ test('View admin page', async ({ page }) => {
   await page.getByRole('button', { name: 'Close' }).click();
 });
 
+test('View base pages without login', async ({ page }) => {
+
+  await page.locator('body').click();
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('contentinfo').getByRole('link', { name: 'Franchise' }).click();
+  await expect(page.getByRole('main')).toContainText('So you want a piece of the pie?');
+  await page.getByRole('link', { name: 'About' }).click();
+  await expect(page.getByRole('main')).toContainText('The secret sauce');
+  await page.getByRole('link', { name: 'History' }).click();
+  await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
+});
 
 
 function randomName() {

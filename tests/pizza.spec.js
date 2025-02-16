@@ -161,6 +161,114 @@ test('CRUD operations on franchises as franchisee', async ({ page }) => {
 });
 
 
+test('View profile as diner', async ({ page }) => {
+  // await page.route('*/**/api/auth', async (route) => {
+  //   const authRes = [
+  //     {"user":{"id":2,"name":"pizza diner","email":"d@jwt.com","roles":[{"role":"diner"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6InBpenphIGRpbmVyIiwiZW1haWwiOiJkQGp3dC5jb20iLCJyb2xlcyI6W3sicm9sZSI6ImRpbmVyIn1dLCJpYXQiOjE3Mzk2NzI4MTh9._jSqTGBBItML8csO3s4daZeENZwYWh_VvEjrE_j5a7o"}
+  //   ];
+  //   expect(route.request().method()).toBe('PUT');
+  //   await route.fulfill({ json: authRes });
+  // });
+
+  await page.route('*/**/api/order', async (route) => {
+    const orderRes = [
+      {"dinerId":2,"orders":[],"page":1}
+    ];
+    expect(route.request().method()).toBe('GET');
+    await route.fulfill({ json: orderRes });
+  });
+
+
+  // await page.route('*/**/api/auth', async (route) => {
+  //   const authRes = [
+  //     { "message": "logout successful" }
+  //   ];
+  //   expect(route.request().method()).toBe('DELETE');
+  //   await route.fulfill({ json: authRes });
+  // });
+
+
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).fill('d@jwt.com');
+  await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Password' }).fill('diner');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByRole('link', { name: 'pd' }).click();
+  await expect(page.getByRole('heading')).toContainText('Your pizza kitchen');
+  await expect(page.getByRole('main')).toContainText('pizza diner');
+  await page.getByRole('link', { name: 'Logout' }).click();
+});
+
+test('View admin page', async ({ page }) => {
+  // await page.route('*/**/api/auth', async (route) => {
+  //   const authRes = [
+  //     {"user":{"id":1,"name":"常用名字","email":"a@jwt.com","roles":[{"role":"admin"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuW4uOeUqOWQjeWtlyIsImVtYWlsIjoiYUBqd3QuY29tIiwicm9sZXMiOlt7InJvbGUiOiJhZG1pbiJ9XSwiaWF0IjoxNzM5NjczNTUyfQ.QY7DJhu7KvEgV502poxSNjf-U6UecLlem_Q7PG0CIMA"}
+  //   ];
+  //   expect(route.request().method()).toBe('PUT');
+  //   await route.fulfill({ json: authRes });
+  // });
+
+  await page.route('*/**/api/franchise', async (route) => {
+    let franRes = [];
+    if (route.request().method() === 'GET') {
+      franRes = [
+        {"id":1,"name":"pizzaPocket","admins":[{"id":3,"name":"pizza franchisee","email":"f@jwt.com"}],"stores":[{"id":1,"name":"SLC","totalRevenue":0},{"id":10,"name":"Provo","totalRevenue":0}]},{"id":5,"name":"TestFranchise","admins":[{"id":1,"name":"常用名字","email":"a@jwt.com"}],"stores":[]}
+      ];
+    }
+    else if(route.request().method() === 'POST') {
+      franRes = [
+        {"stores":[],"id":"","name":"TestFranchise","admins":[{"email":"a@jwt.com"}]}
+      ];
+    } else {
+      console.log(route.request().method())
+    }
+    
+    await route.fulfill({ json: franRes });
+    
+  });
+
+  await page.route('*/**/api/franchise/5', async (route) => {
+    const authRes = [
+      {
+        "message": "franchise deleted"
+      }
+    ];
+    expect(route.request().method()).toBe('DELETE');
+    await route.fulfill({ json: authRes });
+  });
+
+  // Navigate to Admin page
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
+  await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Password' }).fill('admin');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByRole('link', { name: 'Admin' }).click();
+  await expect(page.getByRole('heading')).toContainText('Mama Ricci\'s kitchen');
+  
+  // Add Franchise
+  await page.getByRole('button', { name: 'Add Franchise' }).click();
+  await expect(page.getByRole('heading')).toContainText('Create franchise');
+  await page.getByRole('textbox', { name: 'franchise name' }).click();
+  await page.getByRole('textbox', { name: 'franchise name' }).fill('TestFranchise');
+  await page.getByRole('textbox', { name: 'franchisee admin email' }).click();
+  await page.getByRole('textbox', { name: 'franchisee admin email' }).fill('a@jwt.com');
+  await page.getByRole('button', { name: 'Create' }).click();
+  await expect(page.getByRole('table')).toContainText('TestFranchise');
+  await expect(page.getByRole('table')).toContainText('常用名字');
+
+  // Delete Franchise
+  await page.getByRole('row', { name: 'TestFranchise 常用名字 Close' }).getByRole('button').click();
+  await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
+  await page.getByRole('button', { name: 'Close' }).click();
+});
+
+
+
 function randomName() {
   return Math.random().toString(36).substring(2, 12);
 }

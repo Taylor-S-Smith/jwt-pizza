@@ -102,13 +102,13 @@ test('purchase with login', async ({ page }) => {
 
 test('CRUD operations on franchises as franchisee', async ({ page }) => {
 
-  // await page.route('*/**/api/auth', async (route) => {
-  //   const authRes = [
-  //     {"user":{"id":3,"name":"pizza franchisee","email":"f@jwt.com","roles":[{"role":"diner"},{"objectId":1,"role":"franchisee"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6InBpenphIGZyYW5jaGlzZWUiLCJlbWFpbCI6ImZAand0LmNvbSIsInJvbGVzIjpbeyJyb2xlIjoiZGluZXIifSx7Im9iamVjdElkIjoxLCJyb2xlIjoiZnJhbmNoaXNlZSJ9XSwiaWF0IjoxNzM5NjcxODM2fQ.vyWvt2xIjBYfoa1VJ03IDiZuluJPkuvz14NMD81wIu8"}
-  //   ];
-  //   expect(route.request().method()).toBe('PUT');
-  //   await route.fulfill({ json: authRes });
-  // });
+  await page.route('*/**/api/auth', async (route) => {
+    const loginReq = { email: 'f@jwt.com', password: 'franchisee' };
+    const loginRes = {"user":{"id":3,"name":"pizza franchisee","email":"f@jwt.com","roles":[{"role":"diner"},{"objectId":1,"role":"franchisee"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6InBpenphIGZyYW5jaGlzZWUiLCJlbWFpbCI6ImZAand0LmNvbSIsInJvbGVzIjpbeyJyb2xlIjoiZGluZXIifSx7Im9iamVjdElkIjoxLCJyb2xlIjoiZnJhbmNoaXNlZSJ9XSwiaWF0IjoxNzM5NjcxODM2fQ.vyWvt2xIjBYfoa1VJ03IDiZuluJPkuvz14NMD81wIu8"};
+    expect(route.request().method()).toBe('PUT');
+    expect(route.request().postDataJSON()).toMatchObject(loginReq);
+    await route.fulfill({ json: loginRes });
+  });
 
   await page.route('*/**/api/franchise/3', async (route) => {
     const franchiseRes = [
@@ -162,13 +162,25 @@ test('CRUD operations on franchises as franchisee', async ({ page }) => {
 
 
 test('View profile as diner', async ({ page }) => {
-  // await page.route('*/**/api/auth', async (route) => {
-  //   const authRes = [
-  //     {"user":{"id":2,"name":"pizza diner","email":"d@jwt.com","roles":[{"role":"diner"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6InBpenphIGRpbmVyIiwiZW1haWwiOiJkQGp3dC5jb20iLCJyb2xlcyI6W3sicm9sZSI6ImRpbmVyIn1dLCJpYXQiOjE3Mzk2NzI4MTh9._jSqTGBBItML8csO3s4daZeENZwYWh_VvEjrE_j5a7o"}
-  //   ];
-  //   expect(route.request().method()).toBe('PUT');
-  //   await route.fulfill({ json: authRes });
-  // });
+
+  await page.route('*/**/api/auth', async (route) => {
+    let loginRes = [];
+    if (route.request().method() === 'PUT') {
+      const loginReq = { email: 'd@jwt.com', password: 'diner' };
+      loginRes = {"user":{"id":2,"name":"pizza diner","email":"d@jwt.com","roles":[{"role":"diner"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6InBpenphIGRpbmVyIiwiZW1haWwiOiJkQGp3dC5jb20iLCJyb2xlcyI6W3sicm9sZSI6ImRpbmVyIn1dLCJpYXQiOjE3Mzk2NzI4MTh9._jSqTGBBItML8csO3s4daZeENZwYWh_VvEjrE_j5a7o"};
+      expect(route.request().method()).toBe('PUT');
+      expect(route.request().postDataJSON()).toMatchObject(loginReq);
+    }
+    else if(route.request().method() === 'DELETE') {
+      loginRes = [
+        { "message": "logout successful" }
+      ];
+    } else {
+      console.log(route.request().method())
+    }
+    
+    await route.fulfill({ json: loginRes });
+  });
 
   await page.route('*/**/api/order', async (route) => {
     const orderRes = [
@@ -203,13 +215,13 @@ test('View profile as diner', async ({ page }) => {
 });
 
 test('View admin page', async ({ page }) => {
-  // await page.route('*/**/api/auth', async (route) => {
-  //   const authRes = [
-  //     {"user":{"id":1,"name":"常用名字","email":"a@jwt.com","roles":[{"role":"admin"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuW4uOeUqOWQjeWtlyIsImVtYWlsIjoiYUBqd3QuY29tIiwicm9sZXMiOlt7InJvbGUiOiJhZG1pbiJ9XSwiaWF0IjoxNzM5NjczNTUyfQ.QY7DJhu7KvEgV502poxSNjf-U6UecLlem_Q7PG0CIMA"}
-  //   ];
-  //   expect(route.request().method()).toBe('PUT');
-  //   await route.fulfill({ json: authRes });
-  // });
+  await page.route('*/**/api/auth', async (route) => {
+    const loginReq = { email: 'a@jwt.com', password: 'admin' };
+    const loginRes = {"user":{"id":1,"name":"常用名字","email":"a@jwt.com","roles":[{"role":"admin"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IuW4uOeUqOWQjeWtlyIsImVtYWlsIjoiYUBqd3QuY29tIiwicm9sZXMiOlt7InJvbGUiOiJhZG1pbiJ9XSwiaWF0IjoxNzM5NjczNTUyfQ.QY7DJhu7KvEgV502poxSNjf-U6UecLlem_Q7PG0CIMA"};
+    expect(route.request().method()).toBe('PUT');
+    expect(route.request().postDataJSON()).toMatchObject(loginReq);
+    await route.fulfill({ json: loginRes });
+  });
 
   await page.route('*/**/api/franchise', async (route) => {
     let franRes = [];
@@ -278,8 +290,3 @@ test('View base pages without login', async ({ page }) => {
   await page.getByRole('link', { name: 'History' }).click();
   await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
 });
-
-
-function randomName() {
-  return Math.random().toString(36).substring(2, 12);
-}

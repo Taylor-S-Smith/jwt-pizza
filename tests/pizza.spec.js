@@ -100,3 +100,67 @@ test('purchase with login', async ({ page }) => {
 });
 
 
+test('CRUD operations on franchises as franchisee', async ({ page }) => {
+
+  // await page.route('*/**/api/auth', async (route) => {
+  //   const authRes = [
+  //     {"user":{"id":3,"name":"pizza franchisee","email":"f@jwt.com","roles":[{"role":"diner"},{"objectId":1,"role":"franchisee"}]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6InBpenphIGZyYW5jaGlzZWUiLCJlbWFpbCI6ImZAand0LmNvbSIsInJvbGVzIjpbeyJyb2xlIjoiZGluZXIifSx7Im9iamVjdElkIjoxLCJyb2xlIjoiZnJhbmNoaXNlZSJ9XSwiaWF0IjoxNzM5NjcxODM2fQ.vyWvt2xIjBYfoa1VJ03IDiZuluJPkuvz14NMD81wIu8"}
+  //   ];
+  //   expect(route.request().method()).toBe('PUT');
+  //   await route.fulfill({ json: authRes });
+  // });
+
+  await page.route('*/**/api/franchise/3', async (route) => {
+    const franchiseRes = [
+      {"id":1,"name":"pizzaPocket","admins":[{"id":3,"name":"pizza franchisee","email":"f@jwt.com"}],"stores":[{"id":1,"name":"SLC","totalRevenue":0},{"id":8,"name":"Provo","totalRevenue":0}]}
+    ];
+    expect(route.request().method()).toBe('GET');
+    await route.fulfill({ json: franchiseRes });
+  });
+
+  await page.route('*/**/api/franchise/1/store', async (route) => {
+    const storeRes = [
+      {"id":3,"franchiseId":8,"name":"Provo"}
+    ];
+    expect(route.request().method()).toBe('POST');
+    await route.fulfill({ json: storeRes });
+  });
+
+  await page.route('*/**/api/franchise/1/store/8', async (route) => {
+    const deleteRes = [
+      { "message": "store deleted" }
+    ];
+    expect(route.request().method()).toBe('DELETE');
+    await route.fulfill({ json: deleteRes });
+  });
+
+  //Log in as Franchisee
+  await page.goto('http://localhost:5173');
+  await expect(page.getByRole('heading')).toContainText('The web\'s best pizza');
+  await page.getByRole('contentinfo').getByRole('link', { name: 'Franchise' }).click();
+  await expect(page.getByRole('main')).toContainText('So you want a piece of the pie?');
+  await page.getByRole('link', { name: 'login', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Email address' }).fill('f@jwt.com');
+  await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Password' }).fill('franchisee');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page.locator('tbody')).toContainText('SLC');
+
+  //Create new store
+  await page.getByRole('button', { name: 'Create store' }).click();
+  await page.getByRole('textbox', { name: 'store name' }).click();
+  await page.getByRole('textbox', { name: 'store name' }).fill('Provo');
+  await page.getByRole('button', { name: 'Create' }).click();
+  await expect(page.locator('tbody')).toContainText('Provo');
+  
+  //Delete store
+  await page.getByRole('row', { name: 'Provo 0 ₿ Close' }).getByRole('button').click();
+  await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
+  await page.getByRole('button', { name: 'Close' }).click();
+  
+});
+
+
+function randomName() {
+  return Math.random().toString(36).substring(2, 12);
+}

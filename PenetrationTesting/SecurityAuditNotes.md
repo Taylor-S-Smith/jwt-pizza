@@ -29,13 +29,9 @@
 User Roles:
 Diner, Franchisee, Admin
 
-| Documented Public Endpoints |
-| JWT Pizza Service | JWT Pizza |
-|-------------------|-----------|
-
-| Undocumented Public Endpoints |
-| JWT Pizza Service | JWT Pizza |
-|-------------------|-----------|
+Endpoints:
+- https://pizza.storyweave.click/docs
+- Can't find undocumented server endpoints
 
 For JWT this includes the /api/docs endpoint and /docs view.
 
@@ -70,6 +66,12 @@ Here is a list of questions you can ask to help you find vulnerabilities that wo
 | Server side request forgery                | Can I execute a fetch or console command with the server execution rights?   |
 
 
+## Weakness Ideas:
+- 3. post /api/order puts entire req.body into addDinerOrder()
+- 3. getOrders() uses some string interpolation, but not sure if we can actally inject ${offset},${config.db.listPerPage}
+- 2. get /api/order puts req.query.page into getOrders(), could I put something in there?
+- 1. How are tokens passed around? Could I steal one
+- 1. put /api/order/menu puts entire body into addMenuItem * Requires Admin Permissions
 
 ## Protection ideas:
 - Change all accounts to secure passwords

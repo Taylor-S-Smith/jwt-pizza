@@ -25,7 +25,9 @@ export default function Menu() {
   }, []);
 
   function selectPizza(pizza: Pizza) {
-    setOrder({ items: [...order.items, { menuId: pizza.id, description: pizza.title, price: pizza.price }] });
+    if(order.items.length < 10) {
+        setOrder({ items: [...order.items, { menuId: pizza.id, description: pizza.title, price: pizza.price }] });
+    }
   }
 
   function checkout(event: React.FormEvent) {
@@ -59,7 +61,7 @@ export default function Menu() {
           </div>
 
           <div className="text-yellow-200">
-            {order.items.length > 0 ? 'Selected pizzas: ' + order.items.length : 'What are you waiting for? Pick a store and then add some pizzas!'}
+            {order.items.length > 0 ? ( order.items.length < 10 ? 'Selected pizzas: ' + order.items.length :  'You have selected 10 Pizzas! Please complete this order before choosing more') : 'What are you waiting for? Pick a store and then add some pizzas!'}
           </div>
           <Button
             title="Checkout"

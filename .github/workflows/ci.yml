@@ -59,6 +59,10 @@ jobs:
       name: staging
       url: https://stage-pizza.byucsstudent.click
     steps:
+      - name: Run Dastardly Action Step
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: 'https://pizza.storyweave.click'
       - name: Create OIDC token to AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:

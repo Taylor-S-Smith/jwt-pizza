@@ -8,7 +8,7 @@
 
 ## Who created it?
 
-  It was developed by the National Infrastructure Advisory Council while they were working on a research project [1]. They then chose theForum of Incident Response and Security Teams to be the "custodians" of the system for future iterations [2]. I unfortunately couldn't find more details on the original research project that inspired it. 
+  It was developed by the National Infrastructure Advisory Council while they were working on a research project [1]. They then chose the Forum of Incident Response and Security Teams to be the "custodians" of the system for future iterations [2]. I unfortunately couldn't find more details on the original research project that inspired it. 
 
 ## Has it developed over time?
 

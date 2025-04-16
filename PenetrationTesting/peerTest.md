@@ -1,9 +1,8 @@
-Deliverable 12: Penetration Test
+# Deliverable 12: Penetration Test
 
 Sarah Smalley and Taylor Smith
 
-Self Attack - Taylor:
-
+## Self Attack - Taylor:
 
 ### Attack 1 
 | Item           | Result                                                                         |
@@ -36,7 +35,7 @@ Self Attack - Taylor:
 | Images         | ![Large Pizza Order](LargePizzaOrder.png) <br/> Here the user was able to attempt an order of 251 pizzas. ![Large Order Error](LargeOrderError.png) <br/> It resulted in this error. |
 | Corrections    | The UI now only allows for up to 10 pizzas per order. Additionally, the endpoint will reject orders with more than 10 pizzas. |
 
-Self Attack - Sarah
+## Self Attack - Sarah
 
 ### Attack 1
 | Item           | Result                                                                         |
@@ -49,7 +48,7 @@ Self Attack - Sarah
 | Images         |                                                                                |
 | Corrections    | Sanitize user inputs from that endpoint by adding 'fields' and 'params' arrays |
 
-##Peer Attack - Taylor Attacking Sarah:
+## Peer Attack - Taylor Attacking Sarah:
 
 ### Attack 1
 | Item           | Result                                                                         |
@@ -75,8 +74,7 @@ Self Attack - Sarah
 
 
 
-##Peer Attack - Sarah Attacking Taylor:
-
+## Peer Attack - Sarah Attacking Taylor:
 
 ### Attack 1
 | Item           | Result                                                                         |

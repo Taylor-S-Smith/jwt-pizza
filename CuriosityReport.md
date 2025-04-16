@@ -26,7 +26,7 @@
 
 1. https://en.wikipedia.org/wiki/Common_Vulnerability_Scoring_System
 2. https://ieeexplore.ieee.org/document/7797152
-3.https://www.softwaresecured.com/post/why-common-vulnerability-scoring-systems-suck#:~:text=As%20discussed%20earlier%20the%20major,static%20impact%20regardless%20of%20circumstance.
+3. https://www.softwaresecured.com/post/why-common-vulnerability-scoring-systems-suck#:~:text=As%20discussed%20earlier%20the%20major,static%20impact%20regardless%20of%20circumstance.
 4. https://daniel.haxx.se/blog/2025/01/23/cvss-is-dead-to-us/
 5. https://www.first.org/cvss/v1/
 6. https://securityblueteam.medium.com/journey-through-time-exploring-the-evolution-of-cvss-over-the-years-870e34dfd0be

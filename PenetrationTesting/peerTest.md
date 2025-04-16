@@ -121,6 +121,6 @@ Sarah Smalley and Taylor Smith
 | Corrections    |                                                                                |
 
 
-Combined Summary of Findings
+## Combined Summary of Findings
 
 Initially, both websites had significant account vulnerabilities due to inconsistent code when handling SQL queries, and not having strict enough rules when it comes to passwords. Luckily we were both able to fix the major issues before the attacks. This exercise demonstrates the importance of code consistency and implementing proper security measures. Neither of us were able to find any major exploits in the other’s website
